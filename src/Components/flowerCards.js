@@ -64,7 +64,7 @@ const Name = styled.div`
 `
 
 const Latin_Name = styled.div`
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Ubuntu', italic;
     font-size:12px;
 `
 
