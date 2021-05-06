@@ -11,7 +11,8 @@ const NavBarItems = styled.div`
 `
 
 const NavBarItem = styled.span`
-    
+
+
     display:flex;
     align-items:center;
     justify-content:center;
@@ -62,11 +63,14 @@ const DesktopNav = ()=>{
 
                 <NavBarItem style={{
 
-                    backgroundImage:"linear-gradient(  #ECBCB3 , #ECBCB3 )",
+                    background:'linear-gradient(270deg, #ECBCB3 0%, #EAA79E 100%)',
+                    boxShadow:'0px 15px 20px rgba(234, 168, 159, 0.2)',
+                    borderRadius:'50px',
                     padding:'12px 20px',
                     color:"#FFFFFF",
                     lineHeight:"%82",
-                    borderRadius:"50px"
+                    borderRadius:"50px",
+                    fontWeight:'500'
 
                 }}  onClick={()=>{
                         dispatch({

@@ -26,7 +26,7 @@ const ModalContainer = styled.div`
     border-radius: 3px;
 `
 
-const SubmitButton = styled.button`
+export const SubmitButton = styled.button`
 
     border:none;
     background: linear-gradient(270deg, #ECBCB3 0%, #EAA79E 100%);
@@ -41,17 +41,19 @@ const SubmitButton = styled.button`
     }
 
 `
-const Title = styled.span`
+//I am exporting these declarations because they will be used again in other components
+
+export const Title = styled.span` 
     font-weight:500;
     font-size:20px;
     text-align:center;
 `
-const Fields = styled.div`
+export const Fields = styled.div`
     width:100%;
     display:flex;
     flex-direction:column;
 `
-const Form = styled.form`
+export const Form = styled.form`
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -60,7 +62,8 @@ const Form = styled.form`
 `
 const validateStageValues = values => {
 
-    let errorStore = {}; 
+    let errorStore = {};
+
     let { email , password } = values; 
 
     if (!email) {
