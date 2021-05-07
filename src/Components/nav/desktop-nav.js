@@ -64,7 +64,7 @@ const DesktopNav = ()=>{
                             </span>
 
                             <span>
-                                 { last_name[0].toUpperCase() + last_name.slice(1)}
+                                 { last_name[0].toUpperCase() + last_name.slice(1)   }
                             </span>
 
                             <img src="./img_avatar.png" width="60px" height="60px" style={{borderRadius:'50%',marginLeft:30}}/>
