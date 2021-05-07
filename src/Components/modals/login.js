@@ -17,7 +17,7 @@ const ModalContainer = styled.div`
     left: 50%;
     margin-top: -20px;
     margin-left: -250px;
-    padding:25px;
+    padding:15px 25px 20px 25px ;
     box-sizing:border-box;
     top:25%;
     background:#FFFFFF;
@@ -47,6 +47,7 @@ export const Title = styled.span`
     font-weight:500;
     font-size:20px;
     text-align:center;
+    margin-bottom:5px;
 `
 export const Fields = styled.div`
     width:100%;
@@ -72,15 +73,17 @@ const validateStageValues = values => {
 
     } else if (!validate(email)) { // " Email-validator is a small library that helps to validate user's email
 
-        errorStore.firstName = 'Wrong Format !';
+        errorStore.email = 'Wrong Format !';
 
     }
   
     if (!password) {
 
-        errorStore.email = "This Field Can Not Be Blank!"
+        errorStore.password = "This Field Can Not Be Blank!"
 
     } 
+
+    return errorStore;
 
 }
 
@@ -92,20 +95,31 @@ const LoginModal = (props)=>{
             email:'',
             password:''
         },
+        validate:validateStageValues,
         onSubmit:async (stagedData) => {
 
-            const res = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/login",{
-                method:"POST",
-                body:stagedData
-            });
+            try {
 
-            const { error , token } = await res.json();
+                const res = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/login",{
+                    method:"POST",
+                    body:JSON.stringify(stagedData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                const data = await res.json();
 
-            if(error) {
+                console.log(data);
+
+            } catch(err) {
+
+                console.log(err);
 
             }
-        },
-        validate:validateStageValues
+        
+        }
+        
     })
 
     return <ModalContainer>
@@ -123,18 +137,20 @@ const LoginModal = (props)=>{
                     name="email"
                     type="email"
                     onChange={formik.handleChange} 
-                    value={formik.values.email} />
+                    value={formik.values.email}
+                    error={formik.errors.email} />
 
                 { /* It is great fun to use customized inputs provided by material UI ! */}
 
                 <TextField  
-                    style={{marginTop:8}}   
+                    style={{marginTop:10}}   
                     label="Password" 
                     variant="outlined"
                     name="password"
                     type="password"
                     onChange={formik.handleChange}
-                    value={formik.values.password}  />
+                    value={formik.values.password}
+                    error={formik.errors.password}  />
 
 
             </Fields>

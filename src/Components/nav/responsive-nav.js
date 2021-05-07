@@ -11,10 +11,11 @@ const DropwDownButton = styled.div`
 const Logo = styled.div`
 
     color:#EAA79E;
-    fontSize:27px; 
+    font-size:20px; 
     position:absolute;
     left:20px;
     top:30px;
+    
 
 `
 

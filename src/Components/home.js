@@ -19,7 +19,7 @@ const HomeScreen = ()=>{
     const [flowersState,setFlowers] = useState();
 
     useEffect(async ()=>{ 
-
+       
            const res = await fetch("https://flowrspot-api.herokuapp.com/api/v1/flowers/random");
 
            const { flowers } = await res.json();
