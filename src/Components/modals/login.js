@@ -1,11 +1,10 @@
 import React , {useState} from 'react';
 import styled from 'styled-components';
-import { Button } from '@material-ui/core';
-import { TextField } from '@material-ui/core';
+import { TextField , Button } from '@material-ui/core';
 import { useFormik } from 'formik';
 import {validate} from 'email-validator'
 import {signIn} from '../../actions/userActions'
-import {useDispatch} from 'react-redux'
+import {useDispatch,useSelector} from 'react-redux'
 
 const ModalContainer = styled.div`
 
@@ -26,7 +25,19 @@ const ModalContainer = styled.div`
     z-index:1001;
     box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.05);
     border-radius: 3px;
+
 `
+const Transition = styled.div`
+
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+align-items:center;
+height:100%;
+
+`
+
+//I am exporting these declarations because they will be used again in other components
 
 export const SubmitButton = styled.button`
 
@@ -43,8 +54,6 @@ export const SubmitButton = styled.button`
     }
 
 `
-//I am exporting these declarations because they will be used again in other components
-
 export const Title = styled.span` 
     font-weight:500;
     font-size:20px;
@@ -63,35 +72,27 @@ export const Form = styled.form`
     height:100%;
     width:100%;
 `
+
+
 const validateStageValues = values => {
-
     let errorStore = {};
-
     let { email , password } = values; 
-
     if (!email) {
-
         errorStore.email = "This Field Can Not Be Blank!"
-
     } else if (!validate(email)) { // " Email-validator is a small library that helps to validate user's email
-
         errorStore.email = 'Wrong Format !';
-
     }
-  
     if (!password) {
-
         errorStore.password = "This Field Can Not Be Blank!"
-
     } 
-
     return errorStore;
-
 }
 
 const LoginModal = (props)=>{
 
     const dispatch = useDispatch(); 
+    const isLoggedIn = useSelector(store => store.user.isLoggedin);
+    const [loginError,setLoginError] = useState(null);
 
     const formik = useFormik({ // Here, We dont need to "DECLARE" and "HANDLE" our own state to store data  because useFormik already does it for us ! .
 
@@ -112,23 +113,21 @@ const LoginModal = (props)=>{
                     }
                 });
                 
-                const { auth_token } = await tokenResponse.json();
-
+                const { auth_token , error:loginError } = await tokenResponse.json();
+                if(loginError) {
+                    setLoginError(loginError)
+                    return;
+                }
                 const userResponse = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/me",{
                     headers:{ "Authorization":auth_token}
                     
                 })
-
-                const { user } =  await userResponse.json() // we immediately fetch the current logged in user
-
-                console.log(user);
-
-                dispatch(signIn({token:auth_token,user})); // We are gonna set the user in global state
-
+                const { user , error:tokenError  } =  await userResponse.json() // we immediately fetch the current logged in user
+                dispatch(signIn({token:auth_token,user})); // We are gonna set the user in global statE
 
             } catch(err) {
-
-                console.log(err);
+                
+                setLoginError(err)
 
             }
         
@@ -138,41 +137,68 @@ const LoginModal = (props)=>{
 
     return <ModalContainer>
 
-        <Title> Welcome Back </Title>
+        {  
+            isLoggedIn ? (  
+                
+                <Transition>
 
-        <Form onSubmit={formik.handleSubmit}>
+                        <span>
+                              "Congratulations! You have successfully logged into FlowrSpot!"                             
+                        </span>
 
-            <Fields>
+                        <div>
+                                 <Button onClick={() => dispatch({ type: "ModalHandler", payload: "" })} style={{ marginRight: 8 }} variant="contained" color="primary"> OK </Button>
 
-                <TextField 
-                    style={{marginTop:8}} 
-                    label="Email Address" 
-                    variant="outlined"
-                    name="email"
-                    type="email"
-                    onChange={formik.handleChange} 
-                    value={formik.values.email}
-                    error={formik.errors.email} />
+                                 <Button onClick={() => dispatch({ type: "ModalHandler", payload: "Logout" })} variant="contained" color="primary"> PROFILE </Button>
 
-                { /* It is great fun to use customized inputs provided by material UI ! */}
+                        </div>
 
-                <TextField  
-                    style={{marginTop:10}}   
-                    label="Password" 
-                    variant="outlined"
-                    name="password"
-                    type="password"
-                    onChange={formik.handleChange}
-                    value={formik.values.password}
-                    error={formik.errors.password}  />
+                </Transition>
+          
+            
+            ) : 
+            
+           (  <React.Fragment>
+
+             <Title> Welcome Back </Title>
+
+             <Form onSubmit={formik.handleSubmit}>
+
+                <Fields>
+
+                    <TextField 
+                        style={{marginTop:8}} 
+                        label="Email Address" 
+                        variant="outlined"
+                        name="email"
+                        type="email"
+                        onChange={formik.handleChange} 
+                        value={formik.values.email}
+                        error={formik.errors.email || loginError } />
+
+                    { /* It is great fun to use customized inputs provided by material UI ! */}
+
+                    <TextField  
+                        style={{marginTop:10}}   
+                        label="Password" 
+                        variant="outlined"
+                        name="password"
+                        type="password"
+                        onChange={formik.handleChange}
+                        value={formik.values.password}
+                        error={formik.errors.password || loginError}  />
 
 
-            </Fields>
+                </Fields>
 
-            <SubmitButton type="submit" > Login to your Account </SubmitButton>
+                <SubmitButton type="submit" > Login to your Account </SubmitButton>
 
-        </Form>
-           
+            </Form>
+
+      </React.Fragment> )
+}
+
+          
     </ModalContainer>
 
 }

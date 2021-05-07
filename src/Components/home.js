@@ -28,6 +28,14 @@ const HomeScreen = ()=>{
 
     },[])   
 
+    useEffect(async ()=>{
+
+            const res = await fetch("")
+
+
+
+    },[])
+
     return  <React.Fragment>
 
             <Nav/>

@@ -1,6 +1,6 @@
 import React , {useState,useEffect} from 'react'
 import styled  from 'styled-components'
-import {useDispatch}  from 'react-redux'
+import {useDispatch,useSelector}  from 'react-redux'
 
 const NavBarItems = styled.div`
 
@@ -29,7 +29,8 @@ const NavBarItem = styled.span`
 const DesktopNav = ()=>{
 
     const dispatch = useDispatch()
-
+    const isLoggedin = useSelector( store => store.user.isLoggedin );
+    
     return <React.Fragment>
 
         <NavBarItems style={{color:"#EAA79E",justifyContent:"flex-start",fontSize:"20px",boxSizing:"border-box",paddingLeft:30}} >
