@@ -148,7 +148,7 @@ const LoginModal = (props)=>{
 
                         <div>
                                  <Button onClick={() => dispatch({ type: "ModalHandler", payload: "" })} style={{ marginRight: 8 }} variant="contained" color="primary"> OK </Button>
-
+                                 
                                  <Button onClick={() => dispatch({ type: "ModalHandler", payload: "Logout" })} variant="contained" color="primary"> PROFILE </Button>
 
                         </div>

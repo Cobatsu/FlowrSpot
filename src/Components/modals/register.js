@@ -38,7 +38,7 @@ const validateStageValues = values => {
 
     let errorStore = {}; 
     
-    Object.keys(values).forEach((key,index)=>{ // here, we are checking for all props and then set the error property
+    Object.keys(values).forEach((key,index)=>{ // here, we are checking all props if they are undefined and then set the error property
 
         if(!values[key]) {
             errorStore[key] = "Please Fill All Fields!"
