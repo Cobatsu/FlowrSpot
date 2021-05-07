@@ -39,7 +39,7 @@ const DesktopNav = ()=>{
 
         </NavBarItems>   
 
-        <NavBarItems style={{marginRight:"40px"}}>
+        <NavBarItems style={{marginRight:isLoggedin ? '30px' : '50px'}}>
 
                 <NavBarItem>
                         Flowers
@@ -57,7 +57,7 @@ const DesktopNav = ()=>{
                 { 
                     isLoggedin ? ( 
                         
-                        <NavBarItem>
+                        <NavBarItem onClick={()=>dispatch({type:"ModalHandler",payload:"Logout"})}>
 
                             <span style={{marginRight:7}}> 
                                  { first_name[0].toUpperCase() + first_name.slice(1) }
@@ -67,7 +67,7 @@ const DesktopNav = ()=>{
                                  { last_name[0].toUpperCase() + last_name.slice(1)}
                             </span>
 
-                            <img src="./img_avatar.png" width="60px" height="60px" style={{borderRadius:'50%',marginLeft:13}}/>
+                            <img src="./img_avatar.png" width="60px" height="60px" style={{borderRadius:'50%',marginLeft:30}}/>
 
                         </NavBarItem>  
                         
@@ -91,7 +91,7 @@ const DesktopNav = ()=>{
                                 background:'linear-gradient(270deg, #ECBCB3 0%, #EAA79E 100%)',
                                 boxShadow:'0px 15px 20px rgba(234, 168, 159, 0.2)',
                                 borderRadius:'50px',
-                                padding:'12px 20px',
+                                padding:'12px 18px',
                                 color:"#FFFFFF",
                                 lineHeight:"%82",
                                 borderRadius:"50px",

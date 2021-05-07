@@ -5,9 +5,9 @@ import { TextField } from '@material-ui/core';
 import { useFormik } from 'formik';
 import {validate} from 'email-validator'
 import {Title,Form,SubmitButton,} from './login'
+import {useDispatch,useSelector} from 'react-redux'
 
 const ModalContainer = styled.div`
-
     position:fixed;
     display:flex;
     flex-direction:column;
@@ -27,13 +27,21 @@ const ModalContainer = styled.div`
     border-radius: 3px;
     
 `
-
 const Fields = styled.div`
     width:100%;
     display:flex;
     flex-wrap:wrap;
     justify-content:space-between;
 `
+
+const Transition = styled.div`
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:center;
+    height:100%;
+`
+
 const validateStageValues = values => {
 
     let errorStore = {}; 
@@ -42,7 +50,9 @@ const validateStageValues = values => {
 
         if(!values[key]) {
             errorStore[key] = "Please Fill All Fields!"
-        } else if( key == "email") {
+        } 
+        
+        if( key == "email") {
             if(!validate(values[key])) {
                 errorStore[key] = "Wrong Format!"
             }
@@ -55,6 +65,9 @@ const validateStageValues = values => {
 
 const LoginModal = (props)=>{
 
+    const [registerError,setRegisterError] = useState(null);
+    const [isSubmitted, setIsSubmitted ] = useState(null);
+    const  dispatch = useDispatch();
     const formik = useFormik({ // Here, We dont need to "DECLARE" and "HANDLE" our own state to store data  because useFormik already does it for us ! .
 
         initialValues:{
@@ -64,9 +77,12 @@ const LoginModal = (props)=>{
             last_name:'',
             date_of_birth:''
         },
-        onSubmit:async (stagedData) => {
+        onSubmit:async (stagedData,{validateForm}) => {
 
-            try {
+            validateForm(stagedData);
+            console.log(stagedData);
+            
+            try {       
 
                 const res = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/register",{
                     method:"POST",
@@ -76,7 +92,16 @@ const LoginModal = (props)=>{
                     },
                 });
     
-                const data = await res.json();
+                const { error } = await res.json();
+
+                if(error) {
+                    
+                    setRegisterError(error)
+
+                } else {
+                    dispatch({type:"REGISTER",payload:stagedData})
+                    setIsSubmitted(true);
+                }
 
             } catch(err) {
 
@@ -85,73 +110,105 @@ const LoginModal = (props)=>{
             }
 
         },
-        validate:validateStageValues
+        validate:validateStageValues,
+        validateOnChange:false,
+        validateOnBlur:false,
+
     })
 
     return <ModalContainer>
 
-        <Title> Create an Account </Title>
+        {
 
-        <Form onSubmit={formik.handleSubmit}>
+            isSubmitted ? (  
+                
+                <Transition>
 
-            <Fields>
+                        <span>
+                                "Congratulations! You have successfully signed up for FlowrSpot! "                            
+                        </span>
 
-                    <TextField 
-                    style={{marginTop:8 , width:"48.7%"}} 
-                    label="First Name" 
-                    variant="outlined"
-                    name="first_name"
-                    onChange={formik.handleChange} 
-                    value={formik.values.first_name}
-                    error={formik.errors.first_name} />
+                        <div>
+                                 <Button onClick={() => dispatch({ type: "ModalHandler", payload: "Login" })} style={{ marginRight: 8 , width:'85px' }} variant="contained" color="primary"> OK </Button>
+                        </div>
 
-                { /* It is great fun to use customized inputs provided by material UI ! */}
+                </Transition>
+          
+            
+            ) : (
 
-                    <TextField  
-                    style={{marginTop:8 ,  width:"48.7%"}}   
-                    label="Last Name" 
-                    variant="outlined"
-                    name="last_name"
-                    onChange={formik.handleChange}
-                    value={formik.values.last_name}
-                    error={formik.errors.last_name}  />
+            <React.Fragment>
 
-                    <TextField  
-                    style={{marginTop:8 ,  width:"100%"}}   
-                    label="Date of Birth" 
-                    variant="outlined"
-                    name="date_of_birth"
-                    onChange={formik.handleChange}
-                    value={formik.values.date_of_birth}
-                    error={formik.errors.date_of_birth} />
+                
+                <Title> Create an Account </Title>
 
-                    <TextField  
-                    style={{marginTop:8 ,  width:"100%"}}   
-                    label="Email Address" 
-                    variant="outlined"
-                    name="email"
-                    type="email"
-                    onChange={formik.handleChange}
-                    value={formik.values.email}
-                    error={formik.errors.email} />
+                <Form onSubmit={formik.handleSubmit}>
+
+                    <Fields>
+
+                            <TextField 
+                            style={{marginTop:8 , width:"48.7%"}} 
+                            label="First Name" 
+                            variant="outlined"
+                            name="first_name"
+                            onChange={formik.handleChange} 
+                            value={formik.values.first_name}
+                            error={formik.errors.first_name || registerError} />
+
+                        { /* It is great fun to use customized inputs provided by material UI ! */}
+
+                            <TextField  
+                            style={{marginTop:8 ,  width:"48.7%"}}   
+                            label="Last Name" 
+                            variant="outlined"
+                            name="last_name"
+                            onChange={formik.handleChange}
+                            value={formik.values.last_name}
+                            error={formik.errors.last_name || registerError}  />
+
+                            <TextField  
+                            style={{marginTop:8 ,  width:"100%"}}   
+                            label="Date of Birth" 
+                            variant="outlined"
+                            name="date_of_birth"
+                            onChange={formik.handleChange}
+                            value={formik.values.date_of_birth}
+                            error={formik.errors.date_of_birth || registerError} />
+
+                            <TextField  
+                            style={{marginTop:8 ,  width:"100%"}}   
+                            label="Email Address" 
+                            variant="outlined"
+                            name="email"             
+                            onChange={formik.handleChange}
+                            value={formik.values.email}
+                            error={formik.errors.email || registerError } />
 
 
-                    <TextField  
-                    style={{marginTop:8 ,  width:"100%"}} 
-                    label="Password" 
-                    variant="outlined"
-                    name="password"
-                    type="password"
-                    onChange={formik.handleChange}
-                    value={formik.values.password}
-                    error={formik.errors.password} />
+                            <TextField  
+                            style={{marginTop:8 ,  width:"100%"}} 
+                            label="Password" 
+                            variant="outlined"
+                            name="password"
+                            type="password"
+                            onChange={formik.handleChange}
+                            value={formik.values.password}
+                            error={formik.errors.password || registerError} />
 
 
-            </Fields>
+                    </Fields>
 
-            <SubmitButton type="submit" > Create Account </SubmitButton>
+                    <SubmitButton style={{marginTop:7}} type="submit" > Create Account </SubmitButton>
 
-        </Form>
+                    {
+                        <span style={{fontSize:13,marginTop:6,color:'red'}}>  { registerError ? registerError : null }  </span>
+                    }
+
+                </Form>
+                
+        </React.Fragment> )
+
+        }
            
     </ModalContainer>
 

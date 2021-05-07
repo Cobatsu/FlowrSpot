@@ -4,20 +4,31 @@ const userReducer = (state = {}, { type , payload })=>{
     switch(type) {
 
        case "LOG_IN":
+
             return {
+                ...state,
                 ...payload,
                 isLoggedin:true
             }
-       case "LOG_OUT":
-            return {
 
+       case "LOG_OUT":
+
+            return {
                 isLoggedin:false
             }
-        default:            
-            return state ;
-        break;
+  
+       case "REGISTER": 
+            
+            return {
+
+                ...state,
+                ...payload
+            }
+            
         
     }
+
+    return state ;
 }
 
 

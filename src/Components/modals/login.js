@@ -77,14 +77,25 @@ export const Form = styled.form`
 const validateStageValues = values => {
     let errorStore = {};
     let { email , password } = values; 
+
     if (!email) {
+
         errorStore.email = "This Field Can Not Be Blank!"
-    } else if (!validate(email)) { // " Email-validator is a small library that helps to validate user's email
-        errorStore.email = 'Wrong Format !';
-    }
-    if (!password) {
-        errorStore.password = "This Field Can Not Be Blank!"
+
     } 
+
+    if (!password) {
+
+        errorStore.password = "This Field Can Not Be Blank!"
+
+    } 
+
+    const isValid = validate(email);
+
+    if(!isValid) {
+        errorStore.email = "Wrong Format ! "
+    }
+    
     return errorStore;
 }
 
@@ -100,8 +111,9 @@ const LoginModal = (props)=>{
             email:'',
             password:''
         },
-        validate:validateStageValues,
-        onSubmit:async (stagedData) => {
+        onSubmit:async (stagedData , {validateForm}) => {
+
+            validateForm(stagedData); // validating values before the submit 
 
             try {
 
@@ -114,15 +126,17 @@ const LoginModal = (props)=>{
                 });
                 
                 const { auth_token , error:loginError } = await tokenResponse.json();
+
                 if(loginError) {
                     setLoginError(loginError)
                     return;
                 }
+
                 const userResponse = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/me",{
                     headers:{ "Authorization":auth_token}
                     
                 })
-                const { user , error:tokenError  } =  await userResponse.json() // we immediately fetch the current logged in user
+                const { user } =  await userResponse.json() // we immediately fetch the current logged in user
                 dispatch(signIn({token:auth_token,user})); // We are gonna set the user in global statE
 
             } catch(err) {
@@ -131,7 +145,10 @@ const LoginModal = (props)=>{
 
             }
         
-        }
+        },
+        validate:validateStageValues,
+        validateOnChange:false,
+        validateOnBlur:false
         
     })
 
@@ -147,9 +164,9 @@ const LoginModal = (props)=>{
                         </span>
 
                         <div>
-                                 <Button onClick={() => dispatch({ type: "ModalHandler", payload: "" })} style={{ marginRight: 8 }} variant="contained" color="primary"> OK </Button>
+                                 <Button onClick={() => dispatch({ type: "ModalHandler", payload: "" })} style={{ marginRight: 8 , width:'85px' }} variant="contained" color="primary"> OK </Button>
                                  
-                                 <Button onClick={() => dispatch({ type: "ModalHandler", payload: "Logout" })} variant="contained" color="primary"> PROFILE </Button>
+                                 <Button onClick={() => dispatch({ type: "ModalHandler", payload: "Logout" })}  style={{  width:'85px' }} variant="contained" color="primary"> PROFILE </Button>
 
                         </div>
 
@@ -171,7 +188,6 @@ const LoginModal = (props)=>{
                         label="Email Address" 
                         variant="outlined"
                         name="email"
-                        type="email"
                         onChange={formik.handleChange} 
                         value={formik.values.email}
                         error={formik.errors.email || loginError } />

@@ -8,7 +8,7 @@ const NavContainer = styled.div`
     font-family: Montserrat;
     font-style: normal;
     width:100%;
-    height:80px;
+    height:82px;
     display:flex;
     justify-content:space-between;
     background: #FFFFFF;
