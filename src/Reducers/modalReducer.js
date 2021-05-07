@@ -1,12 +1,16 @@
 
 const modalReducer = (state = {},action)=>{
     
-    const { type } = action;
+    const { type , payload } = action;
 
-    return {
-        ...state,
-        modalType:type
+    if(type === "ModalHandler" ) {
+        return {
+            ...state,
+            modalType:payload
+        }
     }
+
+    return state;
 
 }
 

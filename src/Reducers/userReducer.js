@@ -1,8 +1,23 @@
 
+const userReducer = (state = {}, { type , payload })=>{
 
-const userReducer =()=>{
+    switch(type) {
 
-    return {}
+       case "LOG_IN":
+            return {
+                ...payload,
+                isLoggedin:true
+            }
+       case "LOG_OUT":
+            return {
+
+                isLoggedin:false
+            }
+        default:            
+            return state ;
+        break;
+        
+    }
 }
 
 

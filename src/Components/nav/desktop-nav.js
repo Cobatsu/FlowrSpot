@@ -56,7 +56,8 @@ const DesktopNav = ()=>{
                     style={{color:"#DF9186"}}     
                     onClick={ ()=>{
                         dispatch({
-                            type:"Login"
+                            type:"ModalHandler",
+                            payload:"Login"
                         })
                     }} >
                         Login
@@ -74,9 +75,10 @@ const DesktopNav = ()=>{
                     fontWeight:'500'
 
                 }}  onClick={()=>{
-                        dispatch({
-                            type:"Register"
-                        })
+                    dispatch({
+                        type:"ModalHandler",
+                        payload:"Register"
+                    })
                 }
                 
                 }>

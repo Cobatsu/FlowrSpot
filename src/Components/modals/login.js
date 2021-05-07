@@ -4,6 +4,8 @@ import { Button } from '@material-ui/core';
 import { TextField } from '@material-ui/core';
 import { useFormik } from 'formik';
 import {validate} from 'email-validator'
+import {signIn} from '../../actions/userActions'
+import {useDispatch} from 'react-redux'
 
 const ModalContainer = styled.div`
 
@@ -89,6 +91,8 @@ const validateStageValues = values => {
 
 const LoginModal = (props)=>{
 
+    const dispatch = useDispatch(); 
+
     const formik = useFormik({ // Here, We dont need to "DECLARE" and "HANDLE" our own state to store data  because useFormik already does it for us ! .
 
         initialValues:{
@@ -100,17 +104,27 @@ const LoginModal = (props)=>{
 
             try {
 
-                const res = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/login",{
+                const tokenResponse = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/login",{
                     method:"POST",
                     body:JSON.stringify(stagedData),
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-    
-                const data = await res.json();
+                
+                const { auth_token } = await tokenResponse.json();
 
-                console.log(data);
+                const userResponse = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/me",{
+                    headers:{ "Authorization":auth_token}
+                    
+                })
+
+                const { user } =  await userResponse.json() // we immediately fetch the current logged in user
+
+                console.log(user);
+
+                dispatch(signIn({token:auth_token,user})); // We are gonna set the user in global state
+
 
             } catch(err) {
 

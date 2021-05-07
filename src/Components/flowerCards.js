@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import {useSelector} from 'react-redux'
 
 const CardContainer = styled.div`
 
@@ -70,13 +70,15 @@ const Latin_Name = styled.div`
 
 const Card = ( {profile_picture, name, latin_name, sightings,favorite})=>{
 
+    const starVisible = useSelector( store => store.user.isLoggedin)
+
     return <CardContainer image={profile_picture} >
 
         <Layer/>
 
-        <Star>
-            <i style={{fontSize:18}} className="far fa-star"></i>
-        </Star>
+        {
+            starVisible && <Star> <i style={{fontSize:18}} className="far fa-star"></i> </Star>
+        }
 
         <InnerFields>
 

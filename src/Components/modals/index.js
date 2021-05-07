@@ -27,7 +27,8 @@ const PopUp = ()=>{
 
     const closeModal = ()=>{
         dispatch({
-            type:null
+            type:"ModalHandler",
+            payload:""
         })
     }
 
