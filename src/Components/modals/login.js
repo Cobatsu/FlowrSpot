@@ -111,9 +111,7 @@ const LoginModal = (props)=>{
             email:'',
             password:''
         },
-        onSubmit:async (stagedData , {validateForm}) => {
-
-            validateForm(stagedData); // validating values before the submit 
+        onSubmit:async ( stagedData ) => {
 
             try {
 
@@ -137,6 +135,7 @@ const LoginModal = (props)=>{
                     
                 })
                 const { user } =  await userResponse.json() // we immediately fetch the current logged in user
+
                 dispatch(signIn({token:auth_token,user})); // We are gonna set the user in global statE
 
             } catch(err) {
@@ -208,6 +207,12 @@ const LoginModal = (props)=>{
                 </Fields>
 
                 <SubmitButton type="submit" > Login to your Account </SubmitButton>
+
+                {
+
+                        <span style={{fontSize:13,color:'red',textAlign:'center'}}>  { loginError ? loginError : null }  </span>
+
+                }
 
             </Form>
 

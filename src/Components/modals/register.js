@@ -13,7 +13,7 @@ const ModalContainer = styled.div`
     flex-direction:column;
     align-items:stretch;
     width: 440px;
-    height: 410px;
+    height: 425px;
     top: 50%;
     left: 50%;
     margin-top: -20px;
@@ -80,8 +80,7 @@ const LoginModal = (props)=>{
         onSubmit:async (stagedData,{validateForm}) => {
 
             validateForm(stagedData);
-            console.log(stagedData);
-            
+               
             try {       
 
                 const res = await fetch("https://flowrspot-api.herokuapp.com/api/v1/users/register",{
@@ -201,7 +200,7 @@ const LoginModal = (props)=>{
                     <SubmitButton style={{marginTop:7}} type="submit" > Create Account </SubmitButton>
 
                     {
-                        <span style={{fontSize:13,marginTop:6,color:'red'}}>  { registerError ? registerError : null }  </span>
+                        <span style={{fontSize:13,marginTop:6,color:'red',textAlign:'center'}}>  { registerError ? registerError : null }  </span>
                     }
 
                 </Form>

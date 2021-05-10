@@ -14,7 +14,6 @@ const NavBarItem = styled.span`
 
 
     display:flex;
-    flex-shrink: 0; 
     align-items:center;
     justify-content:center;
     font-size:16px;
